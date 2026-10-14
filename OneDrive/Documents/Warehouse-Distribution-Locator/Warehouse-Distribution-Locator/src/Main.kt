@@ -32,6 +32,3 @@ class RegionalWarehouse(
     override fun getDetails(): String {
         return "Warehouse: $ware
     }
-
-    fun main() mama ko
-uwdkuhduhde
