@@ -31,3 +31,4 @@ class RegionalWarehouse(
 
     override fun getDetails(): String {
         return "Warehouse: $ware
+    }
