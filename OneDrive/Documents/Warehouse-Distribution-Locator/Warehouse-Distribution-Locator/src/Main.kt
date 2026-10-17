@@ -6,7 +6,7 @@ abstract class Warehouse(
     protected var longitude: Double,
     private var capacity: Int
 ) {
-    // Abstract methods (kailangan i-override ng subclasses)
+    // Abstract methods (need override subclasses)
     abstract fun getWarehouseType(): String
     abstract fun getDetails(): String
 
