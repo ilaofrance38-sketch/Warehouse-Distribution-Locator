@@ -1,34 +1,63 @@
-// Abstract class for Warehouse Distribution Locator
-abstract class Warehouse(
+class GeoCoordinate(
+    val latitude: Double,
+    val longitude: Double
+)
+
+abstract class BaseWarehouse(
     val warehouseId: String,
-    var warehouseName: String,
-    protected var latitude: Double,
-    protected var longitude: Double,
-    private var capacity: Int
+    val warehouseName: String,
+    val location: GeoCoordinate,
+    val operatingHours: String,
+    val coverageRadiusKm: Double
 ) {
-    // Abstract methods (need override subclasses)
-    abstract fun getWarehouseType(): String
-    abstract fun getDetails(): String
-
-    // Common method: coordinates
-    fun coordinates(): String = "$latitude, $longitude"
-
-    // Common method: check capacity
-    fun hasCapacity(units: Int): Boolean = units <= capacity
+    abstract fun calculateDeliveryZone(): List<GeoCoordinate>
+    
+    open fun isWithinCoverage(destinationLocation: GeoCoordinate): Boolean {
+        return true
+    }
 }
 
-// Subclass: Regional Warehouse
-class RegionalWarehouse(
+class CentralWarehouse(
     warehouseId: String,
     warehouseName: String,
-    latitude: Double,
-    longitude: Double,
-    capacity: Int
-) : Warehouse(warehouseId, warehouseName, latitude, longitude, capacity) {
-    override fun getWarehouseType(): String {
-        return "Regional Distribution Center"
+    location: GeoCoordinate,
+    operatingHours: String = "24/6",
+    coverageRadiusKm: Double = 50.0,
+    val dockCount: Int,
+    val hasHeavyLifters: Boolean = true,
+    val storageCapacityPallets: Int
+) : BaseWarehouse(warehouseId, warehouseName, location, operatingHours, coverageRadiusKm) {
+    override fun calculateDeliveryZone(): List<GeoCoordinate> {
+        //  delivery hubs o coordinates
+        return listOf(location)
     }
+}
 
-    override fun getDetails(): String {
-        return "Warehouse: $ware
+class FulfillmentCenter(
+    warehouseId: String,
+    warehouseName: String,
+    location: GeoCoordinate,
+    operatingHours: String = "24/7",
+    coverageRadiusKm: Double = 25.0,
+    val packingStationCount: Int,
+    val hasSameDayShipping: Boolean = true,
+    val supportedPlatform: String = "E-Commerce"
+) : BaseWarehouse(warehouseId, warehouseName, location, operatingHours, coverageRadiusKm) {
+    override fun calculateDeliveryZone(): List<GeoCoordinate> {
+        return listOf(location)
     }
+}
+
+class ColdStorageWarehouse(
+    warehouseId: String,
+    warehouseName: String,
+    location: GeoCoordinate,
+    operatingHours: String = "24/7",
+    coverageRadiusKm: Double = 15.0,
+    val temperatureRangeCelsius: String, // hal. "-20°C to 4°C"
+    val hasBlastFreezer: Boolean = true
+) : BaseWarehouse(warehouseId, warehouseName, location, operatingHours, coverageRadiusKm) {
+    override fun calculateDeliveryZone(): List<GeoCoordinate> {
+        return listOf(location)
+    }
+}
